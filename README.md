@@ -22,6 +22,9 @@ const formInstance = reduxHateoasForm({
   // Triggers an API update on a property.
   updateProperty: function(property, value) {},
   
+  // Creates a resource based on the property.
+  createResource: function(property, resource) {},
+  
   // Callback called when the form is finished updating the resource with the API.
   resourceUpdated: function(resource) {},
   
