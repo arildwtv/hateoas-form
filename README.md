@@ -32,3 +32,19 @@ const formInstance = reduxHateoasForm({
   propertyUpdated: function(field, value) {}
 }
 ```
+
+## Example Usage
+
+```js
+const formInstance = reduxHateoasForm({
+  url: 'http://api.example.com/person'
+});
+
+formInstance.then(resource => {
+  formInstance.updateProperty('firstName', 'John'); // Triggers a PATCH call.
+});
+
+formInstance.onResourceUpdated(resource => {
+  console.log('Resource updated!', resource);
+});
+```
