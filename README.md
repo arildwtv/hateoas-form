@@ -3,12 +3,12 @@
 ## Usage
 
 ```js
-import reduxHateoasForm from 'redux-hateoas-form';
+import hateoasForm from 'hateoas-form';
 ```
 
-## API
+## Vanilla JS
 ```js
-const formInstance = reduxHateoasForm({
+const formInstance = hateoasForm({
   // An interceptor for fetch. Here, you may override the fetch calls, for instance adding authorization.
   fetch: function(url, init) {},
 
@@ -31,12 +31,10 @@ const formInstance = reduxHateoasForm({
   // Callback called when the form is finished updating a property
   propertyUpdated: function(field, value) {}
 }
-```
 
-## Example Usage
+// ...
 
-```js
-const formInstance = reduxHateoasForm({
+const formInstance = hateoasForm({
   url: 'http://api.example.com/person'
 });
 
@@ -47,4 +45,42 @@ formInstance.then(resource => {
 formInstance.onResourceUpdated(resource => {
   console.log('Resource updated!', resource);
 });
+```
+
+## Usage With React
+
+```jsx
+// MyComponent.jsx
+
+import { createHateoasComponent } from 'hateoas-form';
+
+const MyComponent = ({ firstName }) =>
+  <div>{firstName}</div>;
+  
+const MyHateoasComponent = createHateoasComponent({
+  url: 'http://api.example.com/my-resource'
+})(MyComponent);
+
+export default MyHateoasComponent;
+
+// ...
+
+ReactDOM.render(<MyHateoasComponent />, domNode);
+```
+
+or:
+
+```jsx
+// MyComponent.jsx
+
+const MyComponent = ({ firstName }) =>
+  <div>{firstName}</div>;
+  
+const MyHateoasComponent = createHateoasComponent()(MyComponent);
+
+export default MyHateoasComponent;
+
+// ...
+
+ReactDOM.render(<MyHateoasComponent url="http://api.example.com/my-resource" />, domNode);
 ```
