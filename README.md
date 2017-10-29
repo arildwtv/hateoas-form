@@ -1,4 +1,4 @@
-# redux-hateoas-form
+# hateoas-form
 
 ## Usage
 
