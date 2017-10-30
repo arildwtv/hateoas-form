@@ -84,3 +84,15 @@ export default MyHateoasComponent;
 
 ReactDOM.render(<MyHateoasComponent url="http://api.example.com/my-resource" />, domNode);
 ```
+
+### Usage With Redux
+
+```js
+const formInstance = hateoasForm({
+  url: 'http://api.example.com/person'
+});
+
+formInstance.onResourceUpdated(resource => {
+  store.dispatch({ type: 'PERSON_FETCHED', payload: resource });
+});
+```
