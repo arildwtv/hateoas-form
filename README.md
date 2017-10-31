@@ -15,9 +15,9 @@ const formInstance = hateoasForm({
   // The URL exposing the API of the resource.
   url: 'http://api.example.com/my-resource',
   
-  // Forces the form to re-fetch (i.e. GET) the resource from the URL. This can be useful when you know the resource has
+  // Signals the form to fetch (i.e. GET) the resource from the URL. This can be useful when you know the resource has
   // been updated from somewhere else and you want to get the updated data.
-  forceFetch: function() {},
+  fetchResource: function() {},
   
   // Triggers an API update on a property.
   updateProperty: function(property, value) {},
