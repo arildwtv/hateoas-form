@@ -20,16 +20,16 @@ const formInstance = hateoasForm({
   fetchResource: function() {},
   
   // Triggers an API update on a property.
-  updateProperty: function(property, value) {},
+  updateProperty: function(resource, property, value) {},
   
   // Creates a resource based on the property.
-  createResource: function(property, resource) {},
+  updateProperties: function(resource, properties) {},
   
   // Callback called when the form is finished updating the resource with the API.
   resourceUpdated: function(resource) {},
   
   // Callback called when the form is finished updating a property
-  propertyUpdated: function(field, value) {}
+  propertyUpdated: function(property, value) {}
 }
 
 // ...
