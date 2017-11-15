@@ -114,7 +114,7 @@ import { createHateoasComponent } from 'hateoas-form';
 const YourResourceComponent = ({ resource }) =>
   <pre>{JSON.stringify(resource, null, 4)}</pre>;
 
-export default createHateoasComponent({ url: '/api/shipments/1' })(YourResourceComponent);
+export default createHateoasComponent({ url: 'https://example.api.com/shipments/1' })(YourResourceComponent);
 ```
 
 Or:
@@ -130,7 +130,7 @@ export default createHateoasComponent()(YourResourceComponent);
 
 // App.jsx
 const App = ({ resource }) =>
-  <YourResourceComponent url="api/shipments/1" />;
+  <YourResourceComponent url="https://example.api.com/shipments/1" />;
 
 export default App;
 ```
