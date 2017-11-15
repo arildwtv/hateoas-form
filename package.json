@@ -1,0 +1,42 @@
+{
+  "name": "hateoas-form",
+  "version": "1.0.0",
+  "description": "## Usage",
+  "main": "lib/index.js",
+  "watch": {
+    "build": "{src,test}/*.js",
+    "run": "lib/*.js"
+  },
+  "scripts": {
+    "build": "babel src -d lib",
+    "run": "node index",
+    "watch": "npm-watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arildwtv/hateoas-form.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arildwtv/hateoas-form/issues"
+  },
+  "homepage": "https://github.com/arildwtv/redux-hateoas-form#readme",
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-plugin-transform-object-rest-spread": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-react": "6.24.1",
+    "npm-watch": "0.3.0"
+  },
+  "dependencies": {
+    "express": "4.16.2",
+    "lodash.get": "4.4.2",
+    "lodash.isobjectlike": "4.0.0",
+    "lodash.merge": "^4.6.0",
+    "lodash.pickby": "4.6.0",
+    "lodash.set": "4.3.2",
+    "react": "16.0.0"
+  }
+}

@@ -1,0 +1,30 @@
+.resource-preview {
+  height: 100%;
+  overflow-y: scroll;
+  flex-basis: 40%;
+  border-left: 1px solid #555;
+  font-size: 16px;
+  box-sizing: border-box;
+  padding: 1vh;
+}
+
+.renderjson {
+  margin: 0;
+}
+
+.renderjson .key {
+  color: #6bc16b;
+}
+
+.renderjson .object.syntax,
+.renderjson .array.syntax {
+  color: #777790;
+}
+
+.renderjson .string {
+  color: #d6a37c;
+}
+
+.renderjson .number {
+  color: #dbef92;
+}

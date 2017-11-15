@@ -1,0 +1,81 @@
+.resource-form {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 2vh;
+  flex-basis: 20%;
+  overflow-y: scroll;
+}
+
+label {
+  display: block;
+}
+
+label + label {
+  margin-top: 2vh;
+}
+
+label .label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+h2 {
+  margin: 0;
+  padding: 0 0 1vh;
+}
+
+input {
+  padding: 1vh;
+  display: block;
+  margin-top: 1vh;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #555;
+  background: #333;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+}
+
+input:focus {
+  background: #383838;
+}
+
+button {
+  background: #4caf50;
+  border: none;
+  color: #fff;
+  padding: 1vh;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 1vh;
+  outline: none;
+}
+
+button:hover {
+  background: #338036;
+}
+
+button:active {
+  transform: translateY(1px);
+  background: #1b4c1d;
+}
+
+.goods-list {
+  margin: 0;
+  padding: 2vh 0 0;
+  list-style-type: none;
+}
+
+.goods-list li {
+  padding: 1vh;
+}
+
+.goods-list li + li {
+  margin-top: 1vh;
+  border-top: 1px solid #555;
+}

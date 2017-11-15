@@ -1,0 +1,22 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+  background: #222;
+  color: #fff;
+  font-size: 18px;
+}
+
+a {
+  color: #95b1e8;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#root {
+  height: 100%;
+}
