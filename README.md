@@ -83,7 +83,7 @@ formInstance.setProperty(resource, propertyName, value);
 formInstance.setProperties(resource, properties);
 ```
 
-### Example
+#### Example
 
 ```js
 const formInstance = hateoasForm({
@@ -102,4 +102,35 @@ formInstance.fetchResource()
   .then(updatedResource => {
     console.log('Resource Updated Again!', updatedResource);
   });
+```
+
+### React
+
+#### Example
+
+```jsx
+import { createHateoasComponent } from 'hateoas-form';
+
+const YourResourceComponent = ({ resource }) =>
+  <pre>{JSON.stringify(resource, null, 4)}</pre>;
+
+export default createHateoasComponent({ url: '/api/shipments/1' })(YourResourceComponent);
+```
+
+Or:
+
+```jsx
+// YourResourceComponent.jsx
+import { createHateoasComponent } from 'hateoas-form';
+
+const YourResourceComponent = ({ resource }) =>
+  <pre>{JSON.stringify(resource, null, 4)}</pre>;
+
+export default createHateoasComponent()(YourResourceComponent);
+
+// App.jsx
+const App = ({ resource }) =>
+  <YourResourceComponent url="api/shipments/1" />;
+
+export default App;
 ```
