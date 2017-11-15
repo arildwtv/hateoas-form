@@ -111,8 +111,8 @@ formInstance.fetchResource()
 ```jsx
 import { createHateoasComponent } from 'hateoas-form';
 
-const YourResourceComponent = ({ resource }) =>
-  <pre>{JSON.stringify(resource, null, 4)}</pre>;
+const YourResourceComponent = ({ resource, fetching }) =>
+  <pre>{fetching ? 'Fetching Resource...' : JSON.stringify(resource, null, 4)}</pre>;
 
 export default createHateoasComponent({ url: 'https://example.api.com/shipments/1' })(YourResourceComponent);
 ```
@@ -123,8 +123,8 @@ Or:
 // YourResourceComponent.jsx
 import { createHateoasComponent } from 'hateoas-form';
 
-const YourResourceComponent = ({ resource }) =>
-  <pre>{JSON.stringify(resource, null, 4)}</pre>;
+const YourResourceComponent = ({ resource, fetching }) =>
+  <pre>{fetching ? 'Fetching Resource...' : JSON.stringify(resource, null, 4)}</pre>;
 
 export default createHateoasComponent()(YourResourceComponent);
 
