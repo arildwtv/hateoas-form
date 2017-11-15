@@ -15,7 +15,9 @@ const store = createStore(
 );
 
 ReactDOM.render(
-  <Provider store={store}><App /></Provider>,
+  <Provider store={store}>
+    <App url="http://localhost:3000/api/shipments/1" />
+  </Provider>,
   document.getElementById('root'));
 
 registerServiceWorker();
