@@ -2,7 +2,6 @@ import set from 'lodash.set';
 import get from 'lodash.get';
 import pickBy from 'lodash.pickby';
 import isObjectLike from 'lodash.isobjectlike';
-import merge from 'lodash.merge';
 
 const handleFetch = (fetch, url, init) =>
   fetch(url, init)
@@ -19,10 +18,6 @@ const handleFetch = (fetch, url, init) =>
 function fetchResource(config) {
   const { url } = config;
   const _fetch = config.fetch || fetch;
-
-  if (!url) {
-    throw new Error('You must provide a URL in your HateoasComponent');
-  }
   
   return handleFetch(_fetch, url);
 }
@@ -160,6 +155,10 @@ function setProperty(config, resource, property, value) {
 }
 
 function hateoasForm(config) {
+  if (!config || !config.url) {
+    throw new Error('You must provide a URL in your HATEOAS form!');
+  }
+
   return {
     fetchResource: fetchResource.bind(undefined, config),
     setProperty: setProperty.bind(undefined, config),
