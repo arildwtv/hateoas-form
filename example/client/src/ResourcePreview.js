@@ -8,11 +8,14 @@ renderjson.set_icons('+', '-');
 class ResourcePreview extends React.Component {
 
   componentDidMount() {
-    this.component.innerHTML = '';
-    this.component.appendChild(renderjson(this.props.resource));
+    this.renderPrettyJson();
   }
 
   componentDidUpdate() {
+    this.renderPrettyJson();
+  }
+
+  renderPrettyJson() {
     this.component.innerHTML = '';
     this.component.appendChild(renderjson(this.props.resource));
   }
