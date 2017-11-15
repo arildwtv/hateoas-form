@@ -4,9 +4,9 @@
   "description": "HATEOAS client written in Javascript",
   "main": "lib/index.js",
   "watch": {
-    "build": "{src,test}/*.js",
+    "build": "{src,test}/**/*.js",
     "run": "lib/*.js",
-    "test": "{src,test}/*.js"
+    "test": "{src,test}/**/*.js"
   },
   "scripts": {
     "build": "babel src -d lib --ignore test.js",
