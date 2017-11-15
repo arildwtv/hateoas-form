@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { reduxForm, Field } from 'redux-form';
 import './ResourceForm.css';
 
-const ResourceForm = ({ handleSubmit, resource, patch, patchBoolean, patchNumber }) =>
+const ResourceForm = ({ handleSubmit, resource, updating, patch, patchBoolean, patchNumber }) =>
   <form onSubmit={handleSubmit} className="resource-form">
     <label>
       <span className="label">Departure</span>
@@ -13,6 +13,7 @@ const ResourceForm = ({ handleSubmit, resource, patch, patchBoolean, patchNumber
         placeholder="Departure"
         component="input"
         onBlur={patch}
+        disabled={updating}
       />
     </label>
     <label>
@@ -22,11 +23,12 @@ const ResourceForm = ({ handleSubmit, resource, patch, patchBoolean, patchNumber
         placeholder="Manifest description"
         component="input"
         onBlur={patch}
+        disabled={updating}
       />
     </label>
     <ul className="goods-list">
       {((resource && resource.goods.item) || []).map((item, index) =>
-        <li key={index.toString()}>
+        <li key={item._links.self.href}>
           <h2>Goods #{index + 1}</h2>
           <label>
             <span className="label">Description</span>
@@ -35,6 +37,7 @@ const ResourceForm = ({ handleSubmit, resource, patch, patchBoolean, patchNumber
               placeholder={`Goods #${index + 1} description`}
               component="input"
               onBlur={patch}
+              disabled={updating}
             />
           </label>
           <label>
@@ -44,6 +47,7 @@ const ResourceForm = ({ handleSubmit, resource, patch, patchBoolean, patchNumber
               component="input"
               type="checkbox"
               onChange={patchBoolean}
+              disabled={updating}
             />
           </label>
           <label>
@@ -53,6 +57,7 @@ const ResourceForm = ({ handleSubmit, resource, patch, patchBoolean, patchNumber
               component="input"
               type="number"
               onBlur={patchNumber}
+              disabled={updating}
             />
           </label>
         </li>
@@ -65,6 +70,7 @@ const ResourceForm = ({ handleSubmit, resource, patch, patchBoolean, patchNumber
           placeholder={`Goods description`}
           component="input"
           onBlur={patch}
+          disabled={updating}
         />
       </label>
     </ul>

@@ -1,4 +1,5 @@
 .resource-preview {
+  position: relative;
   height: 100%;
   overflow-y: scroll;
   flex-basis: 40%;
@@ -6,6 +7,15 @@
   font-size: 16px;
   box-sizing: border-box;
   padding: 1vh;
+}
+
+.resource-preview-loading {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  padding: 2vh;
+  background: #303030;
 }
 
 .renderjson {

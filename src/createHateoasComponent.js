@@ -3,8 +3,9 @@ import hateoasForm from './hateoasForm';
 import stripEmbeddings from './stripEmbeddings';
 
 function _patch(key, value) {
+  this.setState({ updating: true });
   this.hateoasForm.setProperty(this.state.resource, key, value)
-    .then(resource => this.setState({ resource }));
+    .then(resource => this.setState({ resource, updating: false }));
 };
 
 function _patchFromEvent(filter, event) {
@@ -18,21 +19,28 @@ export default function createHateoasComponent(config) {
   return Component => class HateoasComponent extends React.Component {
     constructor(props) {
       super(props);
-      this.hateoasForm = hateoasForm({
-        url: props.url || config.url
-      });
-      this.state = { resource: null, links: [] };
+      this.state = { resource: null, links: [], fetching: true };
       this.patch = _patchFromEvent.bind(this, value => value);
       this.patchBoolean = _patchFromEvent.bind(this, value => ['1', 'true', true, 1].indexOf(value) > -1);
       this.patchNumber = _patchFromEvent.bind(this, value => parseInt(value, 10));
     }
 
     componentDidMount() {
+      this.fetchResource(this.props);
+    }
+
+    componentDidUpdate() {
+      this.fetchResource(this.props);
+    }
+
+    fetchResource(props) {
+      this.hateoasForm = hateoasForm({
+        url: props.url || config.url
+      });
+
       this.hateoasForm.fetchResource()
         .then(resource => {
-          const rels = Object.keys(resource._links);
-          const links = rels.map(rel => Object.assign({}, { rel }, resource._links[rel]));
-          this.setState({ resource, links });
+          this.setState({ resource, fetching: false });
         });
     }
 
@@ -45,6 +53,8 @@ export default function createHateoasComponent(config) {
           patch={this.patch}
           patchBoolean={this.patchBoolean}
           patchNumber={this.patchNumber}
+          fetching={this.state.fetching}
+          updating={this.state.updating}
         />
       );
     }

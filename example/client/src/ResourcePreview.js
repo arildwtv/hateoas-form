@@ -18,7 +18,13 @@ class ResourcePreview extends React.Component {
   }
 
   render() {
-    return <section className="resource-preview" ref={c => { this.component = c; }} />;
+    return (
+      <section className="resource-preview">
+        {this.props.fetching && <span className="resource-preview-loading">Fetching resource...</span>}
+        {this.props.updating && <span className="resource-preview-loading">Updating resource...</span>}
+        <span ref={c => { this.component = c; }} />
+      </section>
+    );
   }
 }
 
