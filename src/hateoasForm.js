@@ -92,9 +92,7 @@ function createAndUpdateResource(config, href, properties) {
 function mergeArrays(array1, array2) {
   const replacedArray = [...array1];
   [...array2].forEach((item, index) => replacedArray[index] = item);
-
-  const resultArray = replacedArray.concat([...array2].slice(array1.length));
-  return resultArray;
+  return replacedArray;
 }
 
 function setProperties(config, resource, properties) {
