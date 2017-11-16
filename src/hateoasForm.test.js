@@ -7,20 +7,8 @@ import typeCheck from '../test/typeCheck';
 const expectType = typeCheck(expect);
 
 describe('hateoasForm', () => {
-  let url;
-  let fetchStub;
-
-  beforeEach(() => {
-    url = 'https://api.example.com/person/1';
-    fetchStub = stub();
-  });
-
-  it('throws when no URL is provided', () => {
-    expect(() => hateoasForm()).to.throw(/^You must provide a URL in your HATEOAS form!$/);
-  });
-
   it('returns HATEOAS form instance', () => {
-    const formInstance = hateoasForm({ url, fetch: fetchStub });
+    const formInstance = hateoasForm();
     expectType.isObject(formInstance);
     expect(formInstance.hasOwnProperty('fetchResource')).to.equal(true);
     expectType.isFunction(formInstance.fetchResource);

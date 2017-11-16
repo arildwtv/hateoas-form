@@ -2,11 +2,7 @@ import fetchResource from './fetchResource';
 import setProperty from './setProperty';
 import setProperties from './setProperties';
 
-function hateoasForm(config) {
-  if (!config || !config.url) {
-    throw new Error('You must provide a URL in your HATEOAS form!');
-  }
-
+function hateoasForm(config = {}) {
   return {
     fetchResource: fetchResource.bind(undefined, config),
     setProperty: setProperty.bind(undefined, config),

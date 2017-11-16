@@ -20,6 +20,7 @@ export default function createHateoasComponent(config) {
     constructor(props) {
       super(props);
       this.state = { resource: null, links: [], fetching: true };
+      this.hateoasForm = hateoasForm();
       this.patch = _patchFromEvent.bind(this, value => value);
       this.patchBoolean = _patchFromEvent.bind(this, value => ['1', 'true', true, 1].indexOf(value) > -1);
       this.patchNumber = _patchFromEvent.bind(this, value => parseInt(value, 10));
@@ -36,11 +37,7 @@ export default function createHateoasComponent(config) {
     }
 
     fetchResource(props) {
-      this.hateoasForm = hateoasForm({
-        url: props.url || config.url
-      });
-
-      this.hateoasForm.fetchResource()
+      this.hateoasForm.fetchResource(props.url || config.url)
         .then(resource => {
           this.setState({ resource, fetching: false });
         });

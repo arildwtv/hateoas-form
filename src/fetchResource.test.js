@@ -23,22 +23,26 @@ describe('fetchResource', () => {
   });
   
   it('returns a thenable', () => {
-    const returned = formInstance.fetchResource();
+    const returned = formInstance.fetchResource(url);
     expectType.isThenable(returned);
+  });
+
+  it('throws an error when no URL is provided', () => {
+    expect(() => formInstance.fetchResource()).to.throw('You must provide a URL from which to fetch the resource!');
   });
   
   it('fetches resource using the provided fetch function', () => {
-    formInstance.fetchResource();
+    formInstance.fetchResource(url);
     expect(fetchStub.calledOnce).to.equal(true);
     expect(fetchStub.getCall(0).args).to.deep.equal([url, undefined]);
   });
   
   it('fetches resource with the provided URL', () => {
-    formInstance.fetchResource();
+    formInstance.fetchResource(url);
     expect(fetchStub.getCall(0).args).to.deep.equal([url, undefined]);
   });
 
   it('returns a promise that resolves to the fetched resource', () =>
-    formInstance.fetchResource()
+    formInstance.fetchResource(url)
       .then(resource => expect(resource).to.deep.equal({ a: 1})));
 });
