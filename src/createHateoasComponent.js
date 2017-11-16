@@ -25,12 +25,14 @@ export default function createHateoasComponent(config) {
       this.patchNumber = _patchFromEvent.bind(this, value => parseInt(value, 10));
     }
 
-    componentDidMount() {
+    componentWillMount() {
       this.fetchResource(this.props);
     }
 
-    componentDidUpdate() {
-      this.fetchResource(this.props);
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.url !== this.props.url) {
+        this.fetchResource(this.props);
+      }
     }
 
     fetchResource(props) {
