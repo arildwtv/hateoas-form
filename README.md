@@ -6,6 +6,8 @@ In project root directory, run:
 
 ```
 $ (sudo) yarn link
+$ cd example/client
+$ yarn link hateoas-form
 ```
 
 Then run the example server:
