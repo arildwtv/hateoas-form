@@ -1,5 +1,5 @@
 import React from 'react';
-import hateoasForm from './hateoasForm';
+import hateoasForm from '../hateoasForm';
 import stripEmbeddings from './stripEmbeddings';
 
 function _patch(key, value) {

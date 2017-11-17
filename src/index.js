@@ -1,4 +1,4 @@
 import hateoasForm from './hateoasForm';
 export default hateoasForm;
-export { default as createHateoasComponent } from './createHateoasComponent';
-export { default as stripEmbeddings } from './stripEmbeddings';
+export { default as createHateoasComponent } from './react/createHateoasComponent';
+export { default as stripEmbeddings } from './react/stripEmbeddings';
