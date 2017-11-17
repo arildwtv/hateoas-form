@@ -176,14 +176,23 @@ _URL provided as a prop to the enhanced component:_
 // YourResourceComponent.jsx
 import { createHateoasComponent } from 'hateoas-form';
 
-const YourResourceComponent = ({ resource, fetching }) =>
+const YourHateoasComponent = ({ resource, fetching }) =>
   <pre>{fetching ? 'Fetching Resource...' : JSON.stringify(resource, null, 4)}</pre>;
 
-export default createHateoasComponent()(YourResourceComponent);
+export default createHateoasComponent()(YourHateoasComponent);
 
 // App.jsx
-const App = ({ resource }) =>
-  <YourResourceComponent url="https://example.api.com/shipments/1" />;
+const App = () =>
+  <YourHateoasComponent url="https://example.api.com/shipments/1" />;
 
 export default App;
 ```
+
+Your enhanced component receives a set of props from the HOC:
+
+- `resource` (`Object`|`null`) - The resource that your HATEOAS component manages, as defined by the provided URL.
+- `fetching` (`boolean`) - Whether the resource is being fetched from the backend.
+- `updating` (`boolean`) - Whether the resource is being updated, i.e. sent to the backend.
+- `patch(event)` (`function`) - Accepts an input event from an HTML target that has a name representing the property to patch, and a value with which to patch the property.
+- `patchBoolean(event)` (`function`) - The same as `patch`, but also parses the target value to a boolean value.
+- `patchNumber(event)` (`function`) - The same as `patch`, but also parses the target value to a number.
