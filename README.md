@@ -107,8 +107,60 @@ formInstance.fetchResource('http://api.example.com/person/1')
 
 ### React
 
-#### Example
+HATEOAS Form comes with bindings for React. The two components you need to care about are:
 
+- `HateoasProvider`
+- `createHateoasComponent`
+
+#### `<HateoasProvider hateoasForm>`
+
+This component provides your HATEOAS components with the functionality needed to perform HATEOAS requests. You should mount this component at the root of your React component tree.
+
+##### Props
+- `hateoasForm` (`Object`) - The instance of a HATEOAS Form, i.e. `hateoasForm()`.
+
+```jsx
+import hateoasForm, { HateoasProvider } from 'hateoas-form';
+
+const hateoasFormInstance = hateoasForm();
+
+ReactDOM.render(
+  <HateoasProvider hateoasForm={hateoasFormInstance}>
+    <App />
+  </HateoasProvider>,
+  document.getElementById('root'));
+```
+
+This is similar to how the React bindings for Redux works. Incidentally, if you need both Redux and HATEOAS functionality, it does not matter which component wraps the other:
+
+```jsx
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import hateoasForm, { HateoasProvider } from 'hateoas-form';
+
+// Create some store...
+// const store = ...;
+
+const hateoasFormInstance = hateoasForm();
+
+ReactDOM.render(
+  <Provider store={store}>
+    <HateoasProvider hateoasForm={hateoasFormInstance}>
+      <App />
+    </HateoasProvider>
+  </Provider>,
+  document.getElementById('root'));
+```
+
+### `createHateoasComponent([{ url }])(Component)`
+
+This is a Higher Order Component (HOC) that encapsulates your component. Use this HOC when you want your component to be enhanced with HATEOAS functionality.
+
+#### Parameters
+
+- `url` (`String`) - Optional. The URL of the resource that you want your component to work with. The URL can also be provided as a prop to your enhanced component.
+
+_URL provided as an argument to the HOC:_
 ```jsx
 import { createHateoasComponent } from 'hateoas-form';
 
@@ -118,7 +170,7 @@ const YourResourceComponent = ({ resource, fetching }) =>
 export default createHateoasComponent({ url: 'https://example.api.com/shipments/1' })(YourResourceComponent);
 ```
 
-Or:
+_URL provided as a prop to the enhanced component:_
 
 ```jsx
 // YourResourceComponent.jsx
