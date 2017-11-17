@@ -1,8 +1,8 @@
 import handleFetch from './handleFetch';
 import get from 'lodash.get';
 
-export default function getEmbeddedResource(config, resource, embeddedName) {
-  const _fetch = config.fetch || fetch;
+export default function getEmbeddedResource(context, resource, embeddedName) {
+  const _fetch = context.config.fetch || fetch;
 
   const link = get(resource, `_links.${embeddedName}`);
   const embedded = get(resource, `_embedded.${embeddedName}`);
@@ -12,7 +12,8 @@ export default function getEmbeddedResource(config, resource, embeddedName) {
       headers: {
         'Content-Type': 'application/json'
       }
-    });
+    })
+      .then(response => response.resource);
   }
   
   return Promise.resolve(embedded);

@@ -9,5 +9,6 @@ export default function createResource(config, href, properties) {
         'Content-Type': 'application/json'
       },
       body: properties ? JSON.stringify(properties) : undefined
-    });
+    })
+    .then(response => response.resource);
 };

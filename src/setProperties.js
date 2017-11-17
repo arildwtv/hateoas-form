@@ -5,8 +5,8 @@ import getEmbeddedResource from './internals/getEmbeddedResource';
 import createResourceAndSetProperties from './internals/createResourceAndSetProperties';
 import mergeArrays from './util/mergeArrays';
 
-export default function setProperties(config, resource, properties) {
-  const _fetch = config.fetch || fetch;
+export default function setProperties(context, resource, properties) {
+  const _fetch = context.config.fetch || fetch;
 
   // Resolve which properties are regular properties on resource, and which are links.
   const linkProperties = pickBy(properties, (value, key) =>
@@ -15,7 +15,7 @@ export default function setProperties(config, resource, properties) {
     !get(resource, `_links.${key}`) && !get(resource, `_embedded.${key}`));
   
   // Update the resource with the non-link properties.
-  const updateResourcePromise = updateResource(config, resource, nonLinkProperties);
+  const updateResourcePromise = updateResource(context, resource, nonLinkProperties);
 
   // Update all embedded resources.
   const allPromises = Object.keys(linkProperties).reduce((acc, linkPropertyName) => {
@@ -25,7 +25,7 @@ export default function setProperties(config, resource, properties) {
       .then(updatedResource =>
         Promise.all([
           updatedResource,
-          getEmbeddedResource(config, updatedResource, linkPropertyName)
+          getEmbeddedResource(context, updatedResource, linkPropertyName)
         ])
       )
       .then(([updatedResource, embeddedResource]) => {
@@ -33,7 +33,7 @@ export default function setProperties(config, resource, properties) {
           const linkHref = get(updatedResource, `_links.${linkPropertyName}.href`);
           return Promise.all([
             updatedResource,
-            createResourceAndSetProperties(config, linkHref, propertiesForEmbeddedResource, setProperties)
+            createResourceAndSetProperties(context, linkHref, propertiesForEmbeddedResource, setProperties)
           ]);
         }
 
@@ -43,11 +43,11 @@ export default function setProperties(config, resource, properties) {
                 .map((propertiesForItem, index) => {
                   if (!embeddedResource[index]) {
                     const linkHref = get(updatedResource, `_links.self.href`);
-                    return createResourceAndSetProperties(config, linkHref, propertiesForItem, setProperties);
+                    return createResourceAndSetProperties(context, linkHref, propertiesForItem, setProperties);
                   }
-                  return setProperties(config, embeddedResource[index], propertiesForItem);
+                  return setProperties(context, embeddedResource[index], propertiesForItem);
                 }))
-          : setProperties(config, embeddedResource, linkProperties[linkPropertyName]);
+          : setProperties(context, embeddedResource, linkProperties[linkPropertyName]);
 
         return Promise.all([
           updatedResource,

@@ -24,6 +24,7 @@ describe('setProperties', () => {
     
     beforeEach(() => {
       response = Promise.resolve({
+        ok: true,
         text: () => ''
       });
       resource = {
@@ -68,6 +69,7 @@ describe('setProperties', () => {
       };
       patchedResource = { ...resource, ...properties };
       response = Promise.resolve({
+        ok: true,
         text: () => JSON.stringify(patchedResource)
       });
       fetchStub.returns(response);

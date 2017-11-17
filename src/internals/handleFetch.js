@@ -1,12 +1,21 @@
 export default function handleFetch(fetch, url, init) {
   return fetch(url, init)
-    .then(response => response.text())
-    .then(text => {
-      try {
-        return text ? JSON.parse(text) : undefined
-      } catch (err) {
-        console.error('Cannot parse response body to JSON', text);
-        throw err;
+    .then(response => Promise.all([response, response.text()]))
+    .then(([response, text]) => {
+      if (!response.ok) {
+        return response;
       }
+      
+      const json = text ? JSON.parse(text) : undefined;
+      return {
+        headers: response.headers,
+        ok: response.ok,
+        redirected: response.redirected,
+        status: response.status,
+        statusText: response.statusText,
+        type: response.type,
+        url: response.url,
+        resource: json
+      };
     });
 };

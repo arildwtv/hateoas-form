@@ -10,11 +10,20 @@ describe('hateoasForm', () => {
   it('returns HATEOAS form instance', () => {
     const formInstance = hateoasForm();
     expectType.isObject(formInstance);
-    expect(formInstance.hasOwnProperty('fetchResource')).to.equal(true);
     expectType.isFunction(formInstance.fetchResource);
-    expect(formInstance.hasOwnProperty('setProperty')).to.equal(true);
     expectType.isFunction(formInstance.setProperty);
-    expect(formInstance.hasOwnProperty('setProperties')).to.equal(true);
     expectType.isFunction(formInstance.setProperties);
+    expectType.isFunction(formInstance.onResourceFetching);
+    expectType.isFunction(formInstance.onResourceFetchingOnce);
+    expectType.isFunction(formInstance.onResourceFetched);
+    expectType.isFunction(formInstance.onResourceFetchedOnce);
+    expectType.isFunction(formInstance.onResourceFetchFailed);
+    expectType.isFunction(formInstance.onResourceFetchFailedOnce);
+    expectType.isFunction(formInstance.onResourceUpdating);
+    expectType.isFunction(formInstance.onResourceUpdatingOnce);
+    expectType.isFunction(formInstance.onResourceUpdated);
+    expectType.isFunction(formInstance.onResourceUpdatedOnce);
+    expectType.isFunction(formInstance.onResourceUpdateFailed);
+    expectType.isFunction(formInstance.onResourceUpdateFailedOnce);
   });
 });

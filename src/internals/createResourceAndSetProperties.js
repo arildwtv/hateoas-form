@@ -2,7 +2,7 @@ import isObjectLike from 'lodash.isobjectlike';
 import pickBy from 'lodash.pickby';
 import createResource from './createResource';
 
-export default function createResourceAndSetProperties(config, href, properties, setProperties) {
+export default function createResourceAndSetProperties(context, href, properties, setProperties) {
   // Resolve properties that we safely can assume are not links.
   const plainPropertiesForEmbeddedResource =
     pickBy(properties, value => !isObjectLike(value));
@@ -12,7 +12,7 @@ export default function createResourceAndSetProperties(config, href, properties,
     pickBy(properties, (value, key) =>
       !plainPropertiesForEmbeddedResource.hasOwnProperty(key));
 
-  return createResource(config, href, plainPropertiesForEmbeddedResource)
+  return createResource(context, href, plainPropertiesForEmbeddedResource)
     .then(createdEmbeddedResource =>
-      setProperties(config, createdEmbeddedResource, objectPropertiesForEmbeddedResource));
+      setProperties(context, createdEmbeddedResource, objectPropertiesForEmbeddedResource));
 };

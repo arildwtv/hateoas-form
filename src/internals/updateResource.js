@@ -2,8 +2,8 @@ import pickBy from 'lodash.pickby';
 import get from 'lodash.get';
 import handleFetch from './handleFetch';
 
-export default function updateResource(config, resource, properties) {
-  const _fetch = config.fetch || fetch;
+export default function updateResource(context, resource, properties) {
+  const _fetch = context.config.fetch || fetch;
 
   const changedProperties = pickBy(properties, (value, key) => value !== resource[key]);
 
@@ -17,5 +17,6 @@ export default function updateResource(config, resource, properties) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(changedProperties)
-    });
+    })
+    .then(response => response.resource);
 };
