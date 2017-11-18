@@ -61,6 +61,5 @@ export default function setProperties(context, resource, properties) {
       });
   }, updateResourcePromise);
 
-  return allPromises
-    .catch(err => console.error(err));
+  return allPromises;
 };

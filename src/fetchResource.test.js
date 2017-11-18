@@ -71,9 +71,22 @@ describe('fetchResource', () => {
   });
 
   describe('when fetch throws an error', () => {
-    it('emits a "fetchFailed" event', done => {
-      const mockedError = new Error('Failed!');
+    let mockedError;
+
+    beforeEach(() => {
+      mockedError = new Error('Failed!');
       fetchStub.throws(mockedError);
+    });
+    
+    it('rejects with the error', done => {
+      formInstance.fetchResource(url)
+        .catch(err => {
+          expect(err).to.equal(mockedError);
+          done();
+        });
+    });
+
+    it('emits a "fetchFailed" event', done => {
       const unsubscribe = formInstance.onResourceFetchFailed(err => {
         expect(err).to.equal(mockedError);
         unsubscribe();
@@ -84,18 +97,33 @@ describe('fetchResource', () => {
   });
   
   describe('when fetch returns a non-OK response', () => {
-    it('emits a "fetchFailed" event', done => {
-      const response = {
+    let response;
+    
+    beforeEach(() => {
+      response = {
         ok: false,
-        status: 400,
-        statusText: 'Bad Request',
+        status: 404,
+        statusText: 'Not Found',
         text: () => ''
       };
       fetchStub.returns(Promise.resolve(response));
+    });
+    
+    it('rejects with an error', () =>
+      formInstance.fetchResource(url)
+        .catch(err => {
+          expect(err.message).to.equal(`Failed to fetch resource ${url} (404 Not Found)`);
+        }));
+
+    it('emits a "fetchFailed" event', done => {
       const unsubscribe = formInstance.onResourceFetchFailed(errResponse => {
-        expect(errResponse).to.equal(response);
-        unsubscribe();
-        done();
+        try {
+          expect(errResponse).to.equal(response);
+          unsubscribe();
+          done();
+        } catch (err) {
+          done(err);
+        }
       });
 
       formInstance.fetchResource(url).catch(Function.prototype);

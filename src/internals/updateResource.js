@@ -11,12 +11,28 @@ export default function updateResource(context, resource, properties) {
     return Promise.resolve(resource);
   }
 
-  return handleFetch(_fetch, get(resource, '_links.self.href'), {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(changedProperties)
-    })
-    .then(response => response.resource);
+  const selfHref = get(resource, '_links.self.href');
+  context.emitter.emitUpdating(selfHref);
+
+  try {
+    return handleFetch(_fetch, selfHref, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(changedProperties)
+      })
+      .then(response => {
+        if (response.ok) {
+          context.emitter.emitUpdated(response.resource);
+          return response.resource;
+        }
+        
+        context.emitter.emitUpdateFailed(response);
+        throw new Error(`Failed to update resource ${selfHref} (${response.status} ${response.statusText})`);
+      });
+  } catch (err) {
+    context.emitter.emitUpdateFailed(err);
+    return Promise.reject(err);
+  }
 };
