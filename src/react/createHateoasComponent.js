@@ -2,19 +2,35 @@ import React from 'react';
 import invariant from 'invariant';
 import hateoasForm from '../hateoasForm';
 import stripEmbeddings from './stripEmbeddings';
+import stripLinks from './stripLinks';
 import propTypes from './propTypes';
 
-function _patch(key, value) {
+function _patch(filter, key, value) {
   this.setState({ updating: true });
-  this.hateoasForm.setProperty(this.state.resource, key, value)
+  this.hateoasForm.setProperty(this.state.resource, key, filter(value))
     .then(resource => this.setState({ resource, updating: false }));
 };
+
+function _patchAll(properties) {
+  this.setState({ updating: true });
+  this.hateoasForm.setProperties(this.state.resource, properties)
+    .then(resource => this.setState({ resource, updating: false }));
+}
+
+function _parseValueFromEvent(event) {
+  switch (event.target.type.toLowerCase()) {
+    case 'checkbox': return event.target.checked;
+    case 'number': return parseInt(event.target.value, 10);
+    default: return event.target.value;
+  }
+}
 
 function _patchFromEvent(filter, event) {
   _patch.call(
     this,
+    filter,
     event.target.name,
-    filter(event.target.type.toLowerCase() === 'checkbox' ? event.target.checked : event.target.value));
+    _parseValueFromEvent(event));
 };
 
 const contextTypes = {
@@ -37,9 +53,11 @@ export default function createHateoasComponent(config) {
             `Either wrap the root element in a <HateoasProvider>, ` +
             `or explicitly pass hateoasForm as a prop to ${displayName}`);
 
-        this.patch = _patchFromEvent.bind(this, value => value);
-        this.patchBoolean = _patchFromEvent.bind(this, value => ['1', 'true', true, 1].indexOf(value) > -1);
-        this.patchNumber = _patchFromEvent.bind(this, value => parseInt(value, 10));
+        this.patch = _patch.bind(this, value => value);
+        this.patchAll = _patchAll.bind(this);
+        this.patchBooleanInput = _patchFromEvent.bind(this, value => ['1', 'true', true, 1].indexOf(value) > -1);
+        this.patchNumberInput = _patchFromEvent.bind(this, value => parseInt(value, 10));
+        this.patchInput = _patchFromEvent.bind(this, value => value);
       }
 
       componentWillMount() {
@@ -60,14 +78,18 @@ export default function createHateoasComponent(config) {
       }
 
       render() {
+        const resource = stripEmbeddings(this.state.resource);
         return (
           <Component
             {...this.props}
             rawResource={this.state.resource}
-            resource={stripEmbeddings(this.state.resource)}
+            resource={resource}
+            resourceFormValues={stripLinks(resource)}
             patch={this.patch}
-            patchBoolean={this.patchBoolean}
-            patchNumber={this.patchNumber}
+            patchAll={this.patchAll}
+            patchInput={this.patchInput}
+            patchBooleanInput={this.patchBooleanInput}
+            patchNumberInput={this.patchNumberInput}
             fetching={this.state.fetching}
             updating={this.state.updating}
           />

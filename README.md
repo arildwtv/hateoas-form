@@ -191,8 +191,12 @@ export default App;
 Your enhanced component receives a set of props from the HOC:
 
 - `resource` (`Object`|`null`) - The resource that your HATEOAS component manages, as defined by the provided URL.
+- `resourceFormValues` (`Object`|`null`) - The resource with the links stripped out and the embeddings merged with the resource.
+- `rawResource` (`Object`|`null`) - The resource exactly as that was passed from the backend.
 - `fetching` (`boolean`) - Whether the resource is being fetched from the backend.
 - `updating` (`boolean`) - Whether the resource is being updated, i.e. sent to the backend.
-- `patch(event)` (`function`) - Accepts an input event from an HTML target that has a name representing the property to patch, and a value with which to patch the property.
-- `patchBoolean(event)` (`function`) - The same as `patch`, but also parses the target value to a boolean value.
-- `patchNumber(event)` (`function`) - The same as `patch`, but also parses the target value to a number.
+- `patch(key, value)` - A function that proxies to the `setProperty` function for your given resource. Can be useful if you want to update a property upon, e.g., clicking a button. For general inputs, consider using `patchInput` instead.
+- `patchAll(values)` - A function that proxies to the `setProperties` function for your given resource. Can be useful if you want to update all values in a form when you submit it.
+- `patchInput(event)` (`function`) - Accepts a DOM event triggered from an HTML input element that has a name representing the property to patch, and a value with which to patch the property. The function parses the value based on the type of HTML input element that triggered the DOM event, e.g. `text`, `checkbox`, `number`, etc. Typical usage is to set this function as a callback on `onBlur` or `onChange` props on `input` elements.
+- `patchBooleanInput(event)` (`function`) - The same as `patchInput`, but also parses the target value to a boolean value. Use this if you need the value to be parsed to a boolean value from an input element that otherwise is not considered to manage a boolean value, e.g. a `select` component.
+- `patchNumberInput(event)` (`function`) - The same as `patchInput`, but also parses the target value to a number. Use this if you need the value to be parsed to a numerical value from an input element that otherwise is not considered to manage a numerical value, e.g. a `select` component.
