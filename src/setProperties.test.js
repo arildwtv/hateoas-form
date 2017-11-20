@@ -6,6 +6,13 @@ import typeCheck from '../test/typeCheck';
 
 const expectType = typeCheck(expect);
 
+const createNotFoundResponse = () => ({
+  ok: false,
+  status: 404,
+  statusText: 'Not Found',
+  text: () => ''
+});
+
 describe('setProperties', () => {
   let url;
   let fetchStub;
@@ -17,7 +24,7 @@ describe('setProperties', () => {
     formInstance = hateoasForm({ url, fetch: fetchStub });
   });
 
-  describe('when properties argument is undefined', () => {
+  describe('when properties is undefined', () => {
     let response;
     let resource;
     let setPropertiesPromise;
@@ -37,20 +44,18 @@ describe('setProperties', () => {
       setPropertiesPromise = formInstance.setProperties(resource, undefined);
     });
     
-    it('returns a thenable', () => {
-      expectType.isThenable(setPropertiesPromise);
-    });
+    it('returns a thenable', () =>
+      expectType.isThenable(setPropertiesPromise));
 
-    it('does not call backend', () => {
-      expect(fetchStub.callCount).to.equal(0);
-    });
+    it('does not call backend', () =>
+      expect(fetchStub.callCount).to.equal(0));
 
     it('resolves to the unmodified resource', () =>
       setPropertiesPromise.then(resolvedResource =>
         expect(resolvedResource).to.equal(resource)));
   });
 
-  describe('when properties argument contains plain property', () => {
+  describe('when properties are plain property on resource', () => {
     let setPropertiesPromise;
     let properties;
     let resource;
@@ -74,11 +79,10 @@ describe('setProperties', () => {
       fetchStub.returns(response);
     });
     
-    it('returns a thenable', () => {
-      expectType.isThenable(formInstance.setProperties(resource, properties));
-    });
+    it('returns a thenable', () =>
+      expectType.isThenable(formInstance.setProperties(resource, properties)));
 
-    it('PATCHes resource with the correct arguments', () => {
+    it('PATCHes resource with the correct arguments', () =>
       formInstance.setProperties(resource, properties)
         .then(() => {
           expect(fetchStub.calledOnce).to.equal(true);
@@ -92,8 +96,7 @@ describe('setProperties', () => {
               body: JSON.stringify(properties)
             }
           ]);
-        });
-    });
+        }));
 
     it('emits an "updating" event', done => {
       const unsubscribe = formInstance.onResourceUpdating(updateUrl => {
@@ -180,7 +183,7 @@ describe('setProperties', () => {
     });
   });
 
-  describe('when properties argument is identical to those of the resource to update', () => {
+  describe('when properties are identical to those of the resource to update', () => {
     let properties;
     let response;
     let resource;
@@ -199,16 +202,206 @@ describe('setProperties', () => {
       setPropertiesPromise = formInstance.setProperties(resource, properties);
     });
     
-    it('returns a thenable', () => {
-      expectType.isThenable(setPropertiesPromise);
-    });
+    it('returns a thenable', () =>
+      expectType.isThenable(setPropertiesPromise));
 
-    it('does not call backend', () => {
-      expect(fetchStub.callCount).to.equal(0);
-    });
+    it('does not call backend', () =>
+      expect(fetchStub.callCount).to.equal(0));
 
     it('resolves to the unmodified resource', () =>
       setPropertiesPromise.then(resolvedResource =>
         expect(resolvedResource).to.equal(resource)));
+  });
+
+  describe('when properties are on linked resource', () => {
+    let contactUrl;
+    let properties;
+    let resource;
+    let contactResource;
+
+    beforeEach(() => {
+      contactUrl = 'https://api.example.com/person/1/contact';
+      properties = {
+        contact: {
+          streetAddress: 'Foobar Street 1'
+        }
+      };
+      resource = {
+        _links: {
+          self: {
+            href: url
+          },
+          contact: {
+            href: contactUrl
+          }
+        }
+      };
+      contactResource = {
+        streetAddress: 'Foobar Street 1',
+        _links: {
+          self: {
+            href: contactUrl
+          }
+        }
+      };
+    });
+
+    describe('when linked resource already exists', () => {
+      beforeEach(() => {
+        const response = {
+          ok: true,
+          status: 200,
+          text: () => JSON.stringify(contactResource)
+        };
+
+        fetchStub.withArgs(contactUrl, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .returns(Promise.resolve(response));
+      });
+
+      it('returns a thenable', () =>
+        expectType.isThenable(formInstance.setProperties(resource, properties)));
+
+      it('returns the resource with the linked resource embedded', () =>
+        formInstance.setProperties(resource, properties)
+          .then(updatedResource =>
+            expect(updatedResource).to.deep.equal({
+              ...resource,
+              _embedded: {
+                contact: contactResource
+              }
+            })));
+    });
+
+    describe('when linked resource does not exist and POST call returns 200 OK', () => {
+      beforeEach(() => {
+        fetchStub.withArgs(contactUrl, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .returns(Promise.resolve(createNotFoundResponse()));
+
+      const response = {
+        ok: true,
+        status: 200,
+        text: () => JSON.stringify(contactResource)
+      };
+
+      fetchStub.withArgs(contactUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(properties.contact)
+        })
+        .returns(Promise.resolve(response));
+      });
+
+      it('returns a thenable', () =>
+        expectType.isThenable(formInstance.setProperties(resource, properties)));
+
+      it('returns the resource with the linked resource embedded', () =>
+      formInstance.setProperties(resource, properties)
+        .then(updatedResource =>
+          expect(updatedResource).to.deep.equal({
+            ...resource,
+            _embedded: {
+              contact: contactResource
+            }
+          })));
+    });
+    
+    describe('when linked resource does not exist and POST call returns 201 Created', () => {
+      beforeEach(() => {
+        const postResponse = {
+          ok: true,
+          status: 201,
+          headers: {
+            get: name => name === 'Location' && contactUrl 
+          },
+          text: () => ''
+        };
+
+        const getResponse = {
+          ok: true,
+          status: 200,
+          text: () => JSON.stringify(contactResource)
+        };
+
+        fetchStub.withArgs(contactUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(properties.contact)
+          })
+          .returns(Promise.resolve(postResponse));
+        
+        fetchStub.withArgs(contactUrl, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .onFirstCall()
+          .returns(Promise.resolve(createNotFoundResponse()))
+          .onSecondCall()
+          .returns(Promise.resolve(getResponse));
+      });
+
+      it('returns a thenable', () =>
+        expectType.isThenable(formInstance.setProperties(resource, properties)));
+
+      it('checks existence of linked resource in the backend first', () =>
+        formInstance.setProperties(resource, properties)
+          .then(() =>
+            expect(fetchStub.getCall(0).args).to.deep.equal([
+                contactUrl,
+                {
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                }
+              ])));
+      
+      it('posts the linked resource to the backend', () => 
+        formInstance.setProperties(resource, properties)
+          .then(() =>
+            expect(fetchStub.getCall(1).args).to.deep.equal([
+                contactUrl,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(properties.contact)
+                }
+              ])));
+
+      it('gets the created linked resource from the backend using the Location header', () =>
+        formInstance.setProperties(resource, properties)
+          .then(() =>
+            expect(fetchStub.getCall(2).args).to.deep.equal([
+                contactUrl,
+                {
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                }
+              ])));
+
+      it('returns the resource with the linked resource embedded', () =>
+        formInstance.setProperties(resource, properties)
+          .then(updatedResource =>
+            expect(updatedResource).to.deep.equal({
+              ...resource,
+              _embedded: {
+                contact: contactResource
+              }
+            })));
+    });
   });
 });
