@@ -117,6 +117,7 @@ HATEOAS Form comes with bindings for React. The two components you need to care 
 This component provides your HATEOAS components with the functionality needed to perform HATEOAS requests. You should mount this component at the root of your React component tree.
 
 ##### Props
+
 - `hateoasForm` (`Object`) - The instance of a HATEOAS Form, i.e. `hateoasForm()`.
 
 ```jsx
@@ -149,14 +150,14 @@ ReactDOM.render(
       <App />
     </HateoasProvider>
   </Provider>,
-  document.getElementById('root'));
+  document.getElementById('root'));
 ```
 
-### `createHateoasComponent([{ url }])(Component)`
+#### `createHateoasComponent([{ url }])(Component)`
 
 This is a Higher Order Component (HOC) that encapsulates your component. Use this HOC when you want your React component to be enhanced with HATEOAS functionality.
 
-#### Simple Example
+##### Simple Example
 
 ```jsx
 // YourResourceComponent.jsx
@@ -173,12 +174,12 @@ export default createHateoasComponent()(YourHateoasComponent);
 
 // App.jsx
 const App = () =>
-  <YourHateoasComponent url="https://example.api.com/shipments/1" />;
+  <YourHateoasComponent url="https://example.api.com/shipments/1" />;
 
 export default App;
 ```
 
-#### Parameters
+##### Parameters
 
 - `resolveUrl(props, fetchResource)` (`Function`) - Optional. A function that returns the URL of the resource that you want your component to work with. The HOC also accepts a promise as the return type. In which case, it will expect the promise to resolve with the URL. In most cases, however, it's recommended to pass the URL to the component as a prop. This functionality is useful when your component receives a resource URL, but you ultimately want it to work with a linked resource from that resource URL. To traverse your API, use the `fetchResource` argument that is passed to the function.
 
@@ -194,16 +195,18 @@ const BlogPostCommentsComponent = ({ resource, fetching }) =>
 
 export default createHateoasComponent({
   resolveUrl: (props, fetchResource) =>
-  	fetchResource(props.url)
+    fetchResource(props.url)
       .then(resource => resource._links.comments.href)
 })(BlogPostCommentsComponent);
 
 // App.jsx
 const App = () =>
-  <BlogPostCommentsComponent url="https://example.api.com/blog-posts/1" />;
+  <BlogPostCommentsComponent url="https://example.api.com/blog-posts/1" />;
 
 export default App;
 ```
+
+##### Props from HOC
 
 Your enhanced component receives a set of props from the HOC:
 
