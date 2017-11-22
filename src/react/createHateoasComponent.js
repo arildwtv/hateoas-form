@@ -4,6 +4,7 @@ import hateoasForm from '../hateoasForm';
 import stripEmbeddings from './stripEmbeddings';
 import stripLinks from './stripLinks';
 import propTypes from './propTypes';
+import isPromise from '../util/isPromise';
 
 function _patch(filter, key, value) {
   this.setState({ updating: true });
@@ -65,13 +66,18 @@ export default function createHateoasComponent(config) {
       }
 
       componentWillReceiveProps(nextProps) {
-        if (nextProps.url !== this.props.url) {
-          this.fetchResource(this.props);
+        if (nextProps !== this.props) {
+          this.fetchResource(nextProps);
         }
       }
 
       fetchResource(props) {
-        this.hateoasForm.fetchResource(props.url || config.url)
+        const url = config && config.resolveUrl
+          ? config.resolveUrl(props, this.hateoasForm.fetchResource)
+          : props.url;
+
+        (isPromise(url) ? url : Promise.resolve(url))
+          .then(url => this.hateoasForm.fetchResource(url))
           .then(resource => {
             this.setState({ resource, fetching: false });
           });
