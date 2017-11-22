@@ -154,36 +154,53 @@ ReactDOM.render(
 
 ### `createHateoasComponent([{ url }])(Component)`
 
-This is a Higher Order Component (HOC) that encapsulates your component. Use this HOC when you want your component to be enhanced with HATEOAS functionality.
+This is a Higher Order Component (HOC) that encapsulates your component. Use this HOC when you want your React component to be enhanced with HATEOAS functionality.
 
-#### Parameters
-
-- `url` (`String`) - Optional. The URL of the resource that you want your component to work with. The URL can also be provided as a prop to your enhanced component.
-
-_URL provided as an argument to the HOC:_
-```jsx
-import { createHateoasComponent } from 'hateoas-form';
-
-const YourResourceComponent = ({ resource, fetching }) =>
-  <pre>{fetching ? 'Fetching Resource...' : JSON.stringify(resource, null, 4)}</pre>;
-
-export default createHateoasComponent({ url: 'https://example.api.com/shipments/1' })(YourResourceComponent);
-```
-
-_URL provided as a prop to the enhanced component:_
+#### Simple Example
 
 ```jsx
 // YourResourceComponent.jsx
 import { createHateoasComponent } from 'hateoas-form';
 
 const YourHateoasComponent = ({ resource, fetching }) =>
-  <pre>{fetching ? 'Fetching Resource...' : JSON.stringify(resource, null, 4)}</pre>;
+  <pre>
+    {fetching
+      ? 'Fetching Resource...'
+      : JSON.stringify(resource, null, 4)}
+  </pre>;
 
 export default createHateoasComponent()(YourHateoasComponent);
 
 // App.jsx
 const App = () =>
   <YourHateoasComponent url="https://example.api.com/shipments/1" />;
+
+export default App;
+```
+
+#### Parameters
+
+- `resolveUrl(props, fetchResource)` (`Function`) - Optional. A function that returns the URL of the resource that you want your component to work with. The HOC also accepts a promise as the return type. In which case, it will expect the promise to resolve with the URL. In most cases, however, it's recommended to pass the URL to the component as a prop. This functionality is useful when your component receives a resource URL, but you ultimately want it to work with a linked resource from that resource URL. To traverse your API, use the `fetchResource` argument that is passed to the function.
+
+```jsx
+import { createHateoasComponent } from 'hateoas-form';
+
+const BlogPostCommentsComponent = ({ resource, fetching }) =>
+  <pre>
+    {fetching
+      ? 'Fetching Comments...'
+      : JSON.stringify(resource, null, 4)}
+  </pre>;
+
+export default createHateoasComponent({
+  resolveUrl: (props, fetchResource) =>
+  	fetchResource(props.url)
+      .then(resource => resource._links.comments.href)
+})(BlogPostCommentsComponent);
+
+// App.jsx
+const App = () =>
+  <BlogPostCommentsComponent url="https://example.api.com/blog-posts/1" />;
 
 export default App;
 ```
