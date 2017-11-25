@@ -1,5 +1,7 @@
 # hateoas-form
 
+<blockquote>Still in pre-pre-pre-alpha stages!</blockquote>
+
 ## Demo
 
 In project root directory, run:
